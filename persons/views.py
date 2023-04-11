@@ -1,18 +1,22 @@
 from django.http import JsonResponse
 from django.shortcuts import render, redirect, get_object_or_404
-
+from django.db.models import Q
 from .forms import PersonCreationForm
-from .models import Person, City
+from .models import Person, City, Country
 
 
 def person_create_view(request):
+    # data = City.objects.filter(Q(name='Chennai')).values()
+    # data = Person.objects.filter(name='testing').values()
     form = PersonCreationForm()
     if request.method == 'POST':
         form = PersonCreationForm(request.POST)
         if form.is_valid():
             form.save()
             return redirect('person_add')
-    return render(request, 'persons/home.html', {'form': form})
+    elif request.method== 'GET':
+        data = Person.objects.filter(Q(country=1)).values()
+    return render(request, 'persons/home.html', {'form': form, 'data':data})
 
 
 def person_update_view(request, pk):
